@@ -2,9 +2,8 @@ const mongoose = require('mongoose');
 
 const PlaylistSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  songs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song' }],
-  isBuiltIn: { type: Boolean, default: false },
+  songs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Songs' }],
+  isBuiltIn: { type: Boolean, default: true }, // ✅ lowercase true
   coverImage: { type: String }
 }, { timestamps: true });
 
