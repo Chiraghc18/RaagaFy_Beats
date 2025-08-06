@@ -8,7 +8,7 @@ const Hero = require("../models/Hero");
 const Heroine = require("../models/Heroine");
 const Movie = require("../models/Movie");
 const Singer = require("../models/Singer");
-
+const Genre = require("../models/Genre")
 /**
  * Register resource routes on the provided Express app.
  * Keep this function idempotent and call it once from server.js.
@@ -19,6 +19,7 @@ function registerResources(app) {
   app.use("/heroines", createRoutes(createController(Heroine)));
   app.use("/movies", createRoutes(createController(Movie)));
   app.use("/singers", createRoutes(createController(Singer)));
+  app.use("/genres", createRoutes(createController(Genre)));
 }
 
 module.exports = registerResources;
