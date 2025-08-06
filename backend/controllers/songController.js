@@ -92,10 +92,68 @@ const likeSong = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+const searchSongs = async (req, res) => {
+  try {
+    const q = (req.query.q || "").trim();
+    if (!q) return res.status(400).json({ error: "q (query) is required" });
 
+    const regex = new RegExp(q, "i");
+
+    // Reference models
+    const Genre = mongoose.model("Genre");
+    const Artist = mongoose.model("Artist");
+    const Movie = mongoose.model("Movie");
+    const Album = mongoose.model("Album");
+    const Singer = mongoose.model("Singer");
+    const Hero = mongoose.model("Hero");
+    const Heroine = mongoose.model("Heroine");
+
+    // Find IDs for referenced documents that match the text
+    const [
+      matchingGenres,
+      matchingArtists,
+      matchingMovies,
+      matchingAlbums,
+      matchingSingers,
+      matchingHeroes,
+      matchingHeroines
+    ] = await Promise.all([
+      Genre.find({ name: regex }).select("_id"),
+      Artist.find({ name: regex }).select("_id"),
+      Movie.find({ name: regex }).select("_id"),
+      Album.find({ name: regex }).select("_id"),
+      Singer.find({ name: regex }).select("_id"),
+      Hero.find({ name: regex }).select("_id"),
+      Heroine.find({ name: regex }).select("_id"),
+    ]);
+
+    const filter = {
+      $or: [
+        { title: regex },
+        { genre: { $in: matchingGenres.map(g => g._id) } },
+        { artist: { $in: matchingArtists.map(a => a._id) } },
+        { movie: { $in: matchingMovies.map(m => m._id) } },
+        { album: { $in: matchingAlbums.map(al => al._id) } },
+        { singers: { $in: matchingSingers.map(s => s._id) } },
+        { hero: { $in: matchingHeroes.map(h => h._id) } },
+        { heroine: { $in: matchingHeroines.map(h => h._id) } }
+      ]
+    };
+
+    const songs = await Song.find(filter)
+      .populate("artist album genre singers movie hero heroine")
+      .sort({ createdAt: -1 });
+
+    res.json(songs);
+  } catch (err) {
+    console.error("searchSongs error:", err);
+    res.status(500).json({ error: err.message });
+  }
+};
 module.exports = {
   uploadSong,
   getAllSongs,
   getSongById,
+  searchSongs,
   likeSong,
 };

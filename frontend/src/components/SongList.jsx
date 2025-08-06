@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function SongList({ songs = [], onLike }) {
+export default function SongList({ songs = [], onLike =0}) {
   return (
     <div>
       <h2>Uploaded Songs</h2>
