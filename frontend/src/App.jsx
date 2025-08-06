@@ -25,6 +25,7 @@ export default function App() {
         <Route path="/heroines" element={<UploadResourcePage resource="heroines" title="Heroines" />} />
         <Route path="/movies" element={<UploadResourcePage resource="movies" title="Movies" />} />
         <Route path="/genres" element={<UploadResourcePage resource="genres" title="genres" />} />
+        <Route path="/singers" element={<UploadResourcePage resource="singers" title="singers" />} />
 
         <Route path="/albums" element={<UploadAlbumPage/>} />
         <Route path="/subgenre" element={<UploadSubgenrePage/>} />

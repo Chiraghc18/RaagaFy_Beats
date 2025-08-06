@@ -1,74 +1,68 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import FileUploader from "../components/FileUploader";
 import SongList from "../components/SongList";
-import fetchSongs from "../services/fetchSongs";
-import uploadSong from "../services/uploadSong";
 import ProgressBar from "../components/ProgressBar";
+import { fetchSongs, uploadSong } from "../services/songService";
 
-const HomePage = () => {
-  const [file, setFile] = useState(null);
+export default function HomePage() {
   const [songs, setSongs] = useState([]);
   const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
 
-  useEffect(() => {
-    loadSongs();
-  }, []);
+  useEffect(() => { loadSongs(); }, []);
 
-  const loadSongs = async () => {
+  async function loadSongs() {
     try {
-      const data = await fetchSongs();
-      setSongs(data);
-    } catch {}
-  };
+  const res = await fetchSongs();
+  const data = res.data || [];
 
-  const handleUpload = async () => {
-    if (!file) {
-      alert("Please select an MP3 file");
-      return;
-    }
+  // copy + reverse (doesn't mutate original array)
+  const reversed = data.slice().reverse(); // or [...data].reverse()
+  setSongs(reversed);
+} catch (err) {
+  console.error("loadSongs error:", err);
+}
+  }
 
+  const handleUpload = async (file, meta = {}) => {
     try {
       setIsUploading(true);
       setProgress(0);
-
-      await uploadSong(file, (percent) => setProgress(percent));
-
-      alert("Upload successful!");
-      setFile(null);
-      setProgress(0);
+      await uploadSong(file, meta, (event) => {
+        if (!event.total) return;
+        setProgress(Math.round((event.loaded * 100) / event.total));
+      });
       setIsUploading(false);
+      setProgress(0);
+      loadSongs();
+      alert("Song uploaded");
+    } catch (err) {
+      console.error("upload error:", err.response?.data || err.message);
+      setIsUploading(false);
+      setProgress(0);
+      alert("Upload failed");
+    }
+  };
+
+  const handleLike = async (songId) => {
+    try {
+      await fetch(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/songs/${songId}/like`, { method: "POST" });
       loadSongs();
     } catch (err) {
-      console.error("Upload failed:", err.response?.data || err.message);
-      alert("Upload failed!");
-      setProgress(0);
-      setIsUploading(false);
+      console.error("like error", err);
     }
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>MP3 Upload & Play</h1>
-      <input
-        type="file"
-        accept="audio/mpeg"
-        onChange={(e) => setFile(e.target.files[0])}
-      />
-      <button onClick={handleUpload} disabled={isUploading}>
-        {isUploading ? "Uploading..." : "Upload"}
-      </button>
+    <div style={{ padding: 20 }}>
+      <h1>Upload Song</h1>
+
+      <FileUploader onUpload={handleUpload} />
 
       <ProgressBar progress={progress} />
+      {isUploading && progress === 100 && <div>Processing on server...</div>}
 
-      {isUploading && progress === 100 && (
-        <p style={{ marginTop: "10px", color: "gray" }}>
-          Processing on server...
-        </p>
-      )}
-
-      <SongList songs={songs} />
+      <SongList songs={songs} onLike={handleLike} />
     </div>
   );
-};
-
-export default HomePage;
+}
