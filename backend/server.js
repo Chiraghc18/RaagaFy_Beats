@@ -18,15 +18,12 @@ app.use("/songs", require("./routes/songRoutes"));
 // register generic resources
 registerResources(app);
 
-const albumRoutes = require("./routes/albumRoutes");
-app.use("/albums", albumRoutes);
 
-const subgenreRoutes = require("./routes/subgenreRoutes");
-app.use("/subgenres", subgenreRoutes);
+app.use("/albums", require("./routes/albumRoutes"));
 
-const playlistRoutes = require("./routes/playlistRoutes");
-app.use("/playlists", playlistRoutes);
+app.use("/subgenres", require("./routes/subgenreRoutes"));
 
+app.use("/playlists", require("./routes/playlistRoutes"));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

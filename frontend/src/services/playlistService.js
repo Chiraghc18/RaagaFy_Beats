@@ -6,10 +6,11 @@ const BASE = `${API_BASE}/playlists`;
 
 export const fetchPlaylists = () => axios.get(BASE);
 
+export const fetchPlaylistById = (id) => axios.get(`${BASE}/${id}`);
+
 export const createPlaylist = (formData, onUploadProgress) =>
   axios.post(`${BASE}/create`, formData, {
     onUploadProgress,
-    // DO NOT set Content-Type manually — let axios set the boundary
   });
 
 export const addSongToPlaylist = (playlistId, songId) =>

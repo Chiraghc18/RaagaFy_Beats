@@ -1,22 +1,25 @@
+// routes/playlistRoutes.js
 const express = require("express");
 const router = express.Router();
 const {
   createPlaylist,
   getAllPlaylists,
+  getPlaylistById,
   addSongToPlaylist,
   removeSongFromPlaylist,
 } = require("../controllers/playlistController");
 
-// uploadImage middleware should handle 'coverImage' file field.
-// Replace with your middleware import/path if different.
 const { uploadImage } = require("../middlewares/uploadImage");
 
-// If you want to accept coverImage file:
 router.post("/create", uploadImage.single("coverImage"), createPlaylist);
 
-// If you don't want cover images, you can use router.post("/create", createPlaylist);
-
+// GET all playlists
 router.get("/", getAllPlaylists);
+
+// GET single playlist (this is required for the details page)
+router.get("/:id", getPlaylistById);
+
+// Add / remove songs
 router.post("/add-song", addSongToPlaylist);
 router.post("/remove-song", removeSongFromPlaylist);
 

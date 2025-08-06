@@ -11,6 +11,8 @@ import UploadAlbumPage from "./pages/UploadAlbumPage";
 import UploadSubgenrePage from "./components/UploadSubgenrePage";
 
 import UploadPlaylistPage from "./pages/UploadPlaylistPage";
+
+import PlaylistDetails from "./pages/PlaylistDetails"
 export default function App() {
   return (
     <Router>
@@ -27,6 +29,8 @@ export default function App() {
         <Route path="/albums" element={<UploadAlbumPage/>} />
         <Route path="/subgenre" element={<UploadSubgenrePage/>} />
         <Route path="/playlist" element={<UploadPlaylistPage/>} />
+        <Route path="/playlists" element={<UploadPlaylistPage />} />
+        <Route path="/playlists/:id" element={<PlaylistDetails />} />
         {/* 404 fallback */}
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -4,19 +4,12 @@ const Song = require("../models/Song");
 
 const createPlaylist = async (req, res) => {
   try {
-    // req.body fields come from formData; files from req.file
     const { name, isBuiltIn } = req.body;
-
-    // songs may be sent as multiple formData entries -> req.body.songs can be:
-    // - undefined, - a string (single), - an array of strings (multiple)
     let songs = req.body.songs || [];
     if (typeof songs === "string") songs = [songs];
-    // if it's already an array, fine.
 
-    // Validate
     if (!name) return res.status(400).json({ error: "Playlist name is required" });
 
-    // Optional: validate song ids exist
     if (songs.length > 0) {
       const existing = await Song.find({ _id: { $in: songs } }).select("_id");
       if (existing.length !== songs.length) {
@@ -24,10 +17,8 @@ const createPlaylist = async (req, res) => {
       }
     }
 
-    // coverImage: may come from upload middleware (req.file)
     let coverImageUrl = req.body.coverImage || undefined;
     if (req.file) {
-      // multer-storage-cloudinary commonly sets req.file.path or req.file.secure_url
       coverImageUrl = req.file.path || req.file.secure_url || req.file.url;
     }
 
@@ -40,9 +31,7 @@ const createPlaylist = async (req, res) => {
 
     await playlist.save();
 
-    // populate songs for response
-    const populated = await Playlist.findById(playlist._id).populate("songs", "title artist");
-
+    const populated = await Playlist.findById(playlist._id).populate("songs", "title artist url filename");
     res.status(201).json(populated);
   } catch (err) {
     console.error("createPlaylist error:", err);
@@ -52,13 +41,26 @@ const createPlaylist = async (req, res) => {
 
 const getAllPlaylists = async (req, res) => {
   try {
-    const playlists = await Playlist.find().populate("songs", "title artist").exec();
+    const playlists = await Playlist.find().populate("songs", "title artist url filename").exec();
     res.json(playlists);
   } catch (err) {
     console.error("getAllPlaylists error:", err);
     res.status(500).json({ error: err.message });
   }
 };
+
+// --- NEW: get single playlist by id (populated) ---
+const getPlaylistById = async (req, res) => {
+  try {
+    const playlist = await Playlist.findById(req.params.id).populate("songs", "title artist url filename").exec();
+    if (!playlist) return res.status(404).json({ error: "Playlist not found" });
+    res.json(playlist);
+  } catch (err) {
+    console.error("getPlaylistById error:", err);
+    res.status(500).json({ error: err.message });
+  }
+};
+// --- end new function ---
 
 const addSongToPlaylist = async (req, res) => {
   try {
@@ -69,7 +71,7 @@ const addSongToPlaylist = async (req, res) => {
       playlist.songs.push(songId);
       await playlist.save();
     }
-    const populated = await Playlist.findById(playlist._id).populate("songs", "title artist");
+    const populated = await Playlist.findById(playlist._id).populate("songs", "title artist url filename");
     res.json(populated);
   } catch (err) {
     console.error("addSongToPlaylist error:", err);
@@ -84,7 +86,7 @@ const removeSongFromPlaylist = async (req, res) => {
     if (!playlist) return res.status(404).json({ error: "Playlist not found" });
     playlist.songs = playlist.songs.filter((id) => id.toString() !== songId);
     await playlist.save();
-    const populated = await Playlist.findById(playlist._id).populate("songs", "title artist");
+    const populated = await Playlist.findById(playlist._id).populate("songs", "title artist url filename");
     res.json(populated);
   } catch (err) {
     console.error("removeSongFromPlaylist error:", err);
@@ -95,6 +97,7 @@ const removeSongFromPlaylist = async (req, res) => {
 module.exports = {
   createPlaylist,
   getAllPlaylists,
+  getPlaylistById,        // <- exported here
   addSongToPlaylist,
   removeSongFromPlaylist,
 };
