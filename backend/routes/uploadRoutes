@@ -1,0 +1,92 @@
+
+
+const express = require("express");
+const router = express.Router();
+
+const Album = require("../models/Album");
+const Genre = require("../models/Genre");
+const Hero = require("../models/Hero");
+const Heroine = require("../models/Heroine");
+const Movie = require("../models/Movie");
+const Singer = require("../models/Singers");
+const Subgenre = require("../models/SubGenre");
+
+
+// Create Album
+router.post("/album", async (req, res) => {
+  try {
+    const album = new Album(req.body); // requires artist ObjectId in request
+    await album.save();
+    res.status(201).json(album);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// Create Genre
+router.post("/genre", async (req, res) => {
+  try {
+    const genre = new Genre(req.body);
+    await genre.save();
+    res.status(201).json(genre);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// Create Hero
+router.post("/hero", async (req, res) => {
+  try {
+    const hero = new Hero(req.body);
+    await hero.save();
+    res.status(201).json(hero);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// Create Heroine
+router.post("/heroine", async (req, res) => {
+  try {
+    const heroine = new Heroine(req.body);
+    await heroine.save();
+    res.status(201).json(heroine);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// Create Movie
+router.post("/movie", async (req, res) => {
+  try {
+    const movie = new Movie(req.body);
+    await movie.save();
+    res.status(201).json(movie);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// Create Singer
+router.post("/singer", async (req, res) => {
+  try {
+    const singer = new Singer(req.body);
+    await singer.save();
+    res.status(201).json(singer);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// Create Subgenre
+router.post("/subgenre", async (req, res) => {
+  try {
+    const subgenre = new Subgenre(req.body); // requires genre ObjectId
+    await subgenre.save();
+    res.status(201).json(subgenre);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+module.exports = router;
