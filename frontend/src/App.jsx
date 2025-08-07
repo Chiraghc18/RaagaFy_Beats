@@ -14,8 +14,6 @@ import UploadPlaylistPage from "./pages/UploadPlaylistPage";
 
 import PlaylistDetails from "./pages/PlaylistDetails";
 
- import SearchSongsPage from "./pages/SearchSongsPage";
-
  
 export default function App() {
   return (
@@ -36,9 +34,6 @@ export default function App() {
         <Route path="/playlist" element={<UploadPlaylistPage/>} />
         <Route path="/playlists" element={<UploadPlaylistPage />} />
         <Route path="/playlists/:id" element={<PlaylistDetails />} />
-
-       
-<Route path="/search" element={<SearchSongsPage />} />
         {/* 404 fallback */}
         <Route path="*" element={<NotFound />} />
       </Routes>

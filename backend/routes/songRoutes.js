@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const upload = require("../middlewares/cloudinaryStorage"); // your multer/cloudinary setup
-const { uploadSong, getAllSongs, getSongById, likeSong,searchSongs } = require("../controllers/songController");
+const { uploadSong, getAllSongs, getSongById, likeSong } = require("../controllers/song");
 
 // Upload audio file under field 'audio'
 router.post("/upload", upload.single("audio"), uploadSong);
@@ -15,6 +15,6 @@ router.get("/:id", getSongById);
 // Like song
 router.post("/:id/like", likeSong);
 
-router.get("/search", searchSongs); 
+
 
 module.exports = router;

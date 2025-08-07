@@ -5,7 +5,9 @@ import {
   addSongToPlaylist,
   removeSongFromPlaylist,
 } from "../services/playlistService";
-import { fetchSongById, fetchSongs } from "../services/songService";
+import { fetchSongById } from "../services/songService/songService";
+import fetchSongs  from "../services/songService/fetchSongs.js";
+
 
 export default function PlaylistDetails() {
   const { id } = useParams();

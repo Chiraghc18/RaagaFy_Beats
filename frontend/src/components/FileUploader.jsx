@@ -7,7 +7,7 @@ import {
   fetchHeroes,
   fetchHeroines,
   fetchSingers,
-} from "../services/songService";
+} from "../services/songService/songService";
 
 export default function FileUploader({ onUpload }) {
   const [file, setFile] = useState(null);

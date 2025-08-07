@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import FileUploader from "../components/FileUploader";
 import SongList from "../components/SongList";
 import ProgressBar from "../components/ProgressBar";
-import { fetchSongs, uploadSong } from "../services/songService";
+import fetchSongs  from "../services/songService/fetchSongs.js";
 
+import {uploadSong} from "../services/songService/uploadSong.js"
 export default function HomePage() {
   const [songs, setSongs] = useState([]);
   const [progress, setProgress] = useState(0);
