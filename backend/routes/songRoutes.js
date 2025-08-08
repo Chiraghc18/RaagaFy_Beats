@@ -6,6 +6,8 @@ const { uploadSong, getAllSongs, getSongById, likeSong,searchSongsByTitle} = req
 // Upload audio file under field 'audio'
 router.post("/upload", upload.single("audio"), uploadSong);
 
+const searchSongsByFilter = require("../controllers/song/searchSongsByFilter");
+
 // Get all songs
 router.get("/", getAllSongs);
 
@@ -14,6 +16,8 @@ router.get("/:id", getSongById);
 
 // Search songs by title
 router.get("/search/title", searchSongsByTitle);
+
+router.get("/search/filter", searchSongsByFilter);
 
 
 // Like song

@@ -16,6 +16,7 @@ import PlaylistDetails from "./pages/PlaylistDetails";
 
 import SearchPage from "./pages/SearchPage";
 
+import SongFilterSearch from "./pages/SongFilterSearch";
  
 export default function App() {
   return (
@@ -40,6 +41,7 @@ export default function App() {
 
         <Route path="/search" element={<SearchPage />} />
 
+    <Route path="/search-filter" element={<SongFilterSearch />} />
         {/* 404 fallback */}
         <Route path="*" element={<NotFound />} />
       </Routes>
