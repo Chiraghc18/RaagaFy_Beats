@@ -12,7 +12,7 @@ const uploadSong = async (req, res) => {
 
     const optionalFields = [
       "genre", "subgenre", "artist", "album",
-      "movie", "hero", "heroine", "photo"
+      "movie", "hero", "heroine", "language", "photo"
     ];
     optionalFields.forEach((key) => {
       if (req.body[key]) songData[key] = req.body[key];
@@ -36,7 +36,8 @@ const uploadSong = async (req, res) => {
       .populate("artist", "name")
       .populate("album", "name")
       .populate("genre", "name")
-      .populate("singers", "name");
+      .populate("singers", "name")
+      .populate("language", "name");
 
     res.status(201).json(populated);
   } catch (err) {

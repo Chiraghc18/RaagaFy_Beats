@@ -7,6 +7,7 @@ import {
   fetchHeroes,
   fetchHeroines,
   fetchSingers,
+  fetchLanguages
 } from "../services/songService/songService";
 
 export default function FileUploader({ onUpload }) {
@@ -19,6 +20,7 @@ export default function FileUploader({ onUpload }) {
   const [movie, setMovie] = useState("");
   const [hero, setHero] = useState("");
   const [heroine, setHeroine] = useState("");
+  const [language, setLanguage] = useState("");
   const [selectedSingers, setSelectedSingers] = useState([]);
 
   const [genres, setGenres] = useState([]);
@@ -28,6 +30,7 @@ export default function FileUploader({ onUpload }) {
   const [heroes, setHeroes] = useState([]);
   const [heroines, setHeroines] = useState([]);
   const [singers, setSingers] = useState([]);
+  const [languages, setLanguages] = useState([]);
 
   useEffect(() => {
     fetchGenres().then(r => setGenres(r.data || [])).catch(()=>{});
@@ -37,6 +40,7 @@ export default function FileUploader({ onUpload }) {
     fetchHeroes().then(r => setHeroes(r.data || [])).catch(()=>{});
     fetchHeroines().then(r => setHeroines(r.data || [])).catch(()=>{});
     fetchSingers().then(r => setSingers(r.data || [])).catch(()=>{});
+    fetchLanguages().then(r => setLanguages(r.data || [])).catch(()=>{});
   }, []);
 
   const toggleSinger = (id) => {
@@ -56,6 +60,7 @@ export default function FileUploader({ onUpload }) {
       singers: selectedSingers,
       hero,
       heroine,
+      language
     };
     onUpload(file, meta);
   };
@@ -111,6 +116,10 @@ export default function FileUploader({ onUpload }) {
         <select value={heroine} onChange={e => setHeroine(e.target.value)} style={{ marginLeft: 8 }}>
           <option value="">Select Heroine</option>
           {heroines.map(h => <option key={h._id} value={h._id}>{h.name}</option>)}
+        </select>
+        <select value={language} onChange={e => setLanguage(e.target.value)} style={{ marginLeft: 8 }}>
+          <option value="">Select Language</option>
+          {languages.map(l => <option key={l._id} value={l._id}>{l.name}</option>)}
         </select>
       </div>
 

@@ -12,5 +12,4 @@ export const fetchMovies = () => axios.get(`${API}/movies`);
 export const fetchHeroes = () => axios.get(`${API}/heroes`);
 export const fetchHeroines = () => axios.get(`${API}/heroines`);
 export const fetchSingers = () => axios.get(`${API}/singers`);
-
-
+export const fetchLanguages = () => axios.get(`${API}/languages`);

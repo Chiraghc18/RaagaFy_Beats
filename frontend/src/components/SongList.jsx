@@ -13,6 +13,8 @@ export default function SongList({ songs = [], onLike =0}) {
               {s.album?.name ? ` — ${s.album.name}` : ""}
               {s.genre?.name ? ` — ${s.genre.name}` : ""}
               {s.singers?.length ? ` — ${s.singers.map(x=>x.name).join(", ")}` : ""}
+              {s.movie?.name ? ` — ${s.movie.name}` : ""}
+              {s.language?.name ? ` — ${s.language.name}` : ""}
             </div>
             <div style={{ marginTop: 8 }}>
               <audio controls  src={s.audioUrl} style={{ width: "100%" }} />
