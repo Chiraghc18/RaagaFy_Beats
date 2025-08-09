@@ -19,6 +19,8 @@ import SearchPage from "./pages/SearchPage";
 import SongFilterSearch from "./pages/SongFilterSearch";
 
 import BrowseByCategoryPage from "./pages/BrowseByCategoryPage";
+
+import SongPlayerPage from "./pages/SongPlayerPage";
  
 export default function App() {
   return (
@@ -44,6 +46,8 @@ export default function App() {
         <Route path="/search" element={<SearchPage />} />
 
     <Route path="/search-filter" element={<SongFilterSearch />} />
+
+     <Route path="/player" element={<SongPlayerPage />} />
 
     
 <Route path="/browse" element={<BrowseByCategoryPage />} />
