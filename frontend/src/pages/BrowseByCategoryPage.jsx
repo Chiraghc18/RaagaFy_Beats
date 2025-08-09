@@ -1,21 +1,11 @@
 // src/pages/BrowseByCategoryPage.jsx
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { categoryApiMap, fetchCategoryItems, fetchSongsByCategory } from "../services/songService/browseService";
+import CategorySelector from "../components/CategorySelector";
+import CategoryItems from "../components/CategoryItems";
+import BrowseSongLists from "../components/BrowseSongLists";
 
-const BASE_URL = "http://localhost:5000";
-
-const categoryApiMap = {
-  genre: "/genres",
-  subgenre: "/subgenres",
-  artist: "/artists",
-  album: "/albums",
-  movie: "/movies",
-  hero: "/heroes",
-  heroine: "/heroines",
-  language: "/languages",
-  singer: "/singers",
-};
-
+import "../assets/style/BrowseByCategoryPage.css"; // Import the CSS for styling
 export default function BrowseByCategoryPage() {
   const [category, setCategory] = useState("");
   const [items, setItems] = useState([]);
@@ -26,17 +16,17 @@ export default function BrowseByCategoryPage() {
   useEffect(() => {
     if (!category) return;
     setSongs([]); // clear songs
-    axios.get(`${BASE_URL}${categoryApiMap[category]}`)
-      .then(res => setItems(res.data))
-      .catch(err => console.error(err));
+    fetchCategoryItems(category)
+      .then(setItems)
+      .catch((err) => console.error(err));
   }, [category]);
 
   // Fetch songs under selected item
   const handleItemClick = async (itemId) => {
     setLoading(true);
     try {
-      const res = await axios.get(`${BASE_URL}/songs/browse/${category}/${itemId}`);
-      setSongs(res.data);
+      const data = await fetchSongsByCategory(category, itemId);
+      setSongs(data);
     } catch (err) {
       console.error(err);
     }
@@ -44,48 +34,21 @@ export default function BrowseByCategoryPage() {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">Browse Songs by Category</h1>
+    <div className="browse-page">
+      <h1 className="browse-title">Browse Songs by Category</h1>
 
-      {/* Step 1: Select category */}
-      <select
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-        className="border px-3 py-2 rounded mb-4"
-      >
-        <option value="">-- Select Category --</option>
-        {Object.keys(categoryApiMap).map(cat => (
-          <option key={cat} value={cat}>{cat}</option>
-        ))}
-      </select>
+      <CategorySelector
+        category={category}
+        setCategory={setCategory}
+        categories={categoryApiMap}
+      />
 
-      {/* Step 2: Show items */}
       {category && items.length > 0 && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          {items.map(item => (
-            <button
-              key={item._id}
-              onClick={() => handleItemClick(item._id)}
-              className="border p-3 rounded shadow hover:bg-gray-100 cursor-pointer"
-            >
-              {item.name}
-            </button>
-          ))}
-        </div>
+        <CategoryItems items={items} onSelect={handleItemClick} />
       )}
 
-      {/* Step 3: Show songs */}
-      {loading && <p>Loading songs...</p>}
-      {songs.length > 0 && (
-        <div className="space-y-4">
-          {songs.map(song => (
-            <div key={song._id} className="border p-4 rounded shadow">
-              <h3 className="font-bold">{song.title}</h3>
-              <audio controls src={song.audioUrl} className="w-full mt-2" />
-            </div>
-          ))}
-        </div>
-      )}
+      {loading && <p className="loading-text">Loading songs...</p>}
+      {songs.length > 0 && <BrowseSongLists songs={songs} />}
     </div>
   );
 }
