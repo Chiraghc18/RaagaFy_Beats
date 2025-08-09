@@ -2,10 +2,11 @@
 
 import React, { useState } from "react";
 import { searchSongsByTitle } from "../services/songService/searchSongsByTitle";
+import BrowseSongLists from "./BrowseSongLists";
 
 export default function SearchSongs() {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
+  const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const handleSearch = async (e) => {
@@ -15,7 +16,7 @@ export default function SearchSongs() {
     setLoading(true);
     try {
       const data = await searchSongsByTitle(query);
-      setResults(data);
+      setSongs(data);
     } catch (err) {
       alert("Search failed");
     } finally {
@@ -44,12 +45,7 @@ export default function SearchSongs() {
       {loading && <p className="mt-4">Searching...</p>}
 
       <div className="mt-6 space-y-4">
-        {results.map((song) => (
-          <div key={song._id} className="border p-4 rounded-md shadow">
-            <h3 className="text-lg font-bold">{song.title}</h3>
-            <audio controls src={song.audioUrl} className="w-full mt-2" />
-          </div>
-        ))}
+        {songs.length > 0 && <BrowseSongLists songs={songs} />}
       </div>
     </div>
   );

@@ -39,18 +39,17 @@ export default function App() {
 
         <Route path="/albums" element={<UploadAlbumPage/>} />
         <Route path="/subgenre" element={<UploadSubgenrePage/>} />
-        <Route path="/playlist" element={<UploadPlaylistPage/>} />
+        {/* <Route path="/playlist" element={<UploadPlaylistPage/>} /> */}
         <Route path="/playlists" element={<UploadPlaylistPage />} />
         <Route path="/playlists/:id" element={<PlaylistDetails />} />
 
         <Route path="/search" element={<SearchPage />} />
 
-    <Route path="/search-filter" element={<SongFilterSearch />} />
+        <Route path="/search-filter" element={<SongFilterSearch />} />
 
-     <Route path="/player" element={<SongPlayerPage />} />
+        <Route path="/browse" element={<BrowseByCategoryPage />} />
 
-    
-<Route path="/browse" element={<BrowseByCategoryPage />} />
+        <Route path="/player" element={<SongPlayerPage />} />
         {/* 404 fallback */}
         <Route path="*" element={<NotFound />} />
       </Routes>

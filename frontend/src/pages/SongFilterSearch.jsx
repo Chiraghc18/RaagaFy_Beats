@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import SongFilterSearch from "../components/SongFilterSearch";
 import { fetchAllFilters, fetchFilteredSongs } from "../services/songService/songFilterService";
+import BrowseSongLists from "../components/BrowseSongLists";
 
 export default function SongFilterSearchPage() {
   const [filters, setFilters] = useState({
@@ -62,22 +63,7 @@ export default function SongFilterSearchPage() {
         ) : songs.length === 0 ? (
           <p>No songs found</p>
         ) : (
-          <ul className="space-y-4">
-            {songs.map((song) => (
-              <li
-                key={song._id}
-                className="border p-4 rounded shadow flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
-              >
-                <div>
-                  <h4 className="text-lg font-bold">{song.title}</h4>
-                  <p className="text-sm text-gray-600">
-                    Genre: {song.genre?.name}, Artist: {song.artist?.name}
-                  </p>
-                </div>
-                <audio controls src={song.audioUrl} className="w-full md:w-72" />
-              </li>
-            ))}
-          </ul>
+          <BrowseSongLists songs={songs} />
         )}
       </div>
     </div>

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import FileUploader from "../components/FileUploader";
-import SongList from "../components/SongList";
 import ProgressBar from "../components/ProgressBar";
 import fetchSongs  from "../services/songService/fetchSongs.js";
 
 import {uploadSong} from "../services/songService/uploadSong.js"
+
+import BrowseSongLists from "../components/BrowseSongLists";
+
 export default function HomePage() {
   const [songs, setSongs] = useState([]);
   const [progress, setProgress] = useState(0);
@@ -63,7 +65,7 @@ export default function HomePage() {
       <ProgressBar progress={progress} />
       {isUploading && progress === 100 && <div>Processing on server...</div>}
 
-      <SongList songs={songs} onLike={handleLike} />
+            {songs.length > 0 && <BrowseSongLists songs={songs} />}
     </div>
   );
 }
