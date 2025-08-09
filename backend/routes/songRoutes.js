@@ -19,6 +19,10 @@ router.get("/search/title", searchSongsByTitle);
 
 router.get("/search/filter", searchSongsByFilter);
 
+// routes/songRoutes.js
+const browseSongsByCategory = require("../controllers/song/browseSongsByCategory");
+
+router.get("/browse/:category/:id", browseSongsByCategory);
 
 // Like song
 router.post("/:id/like", likeSong);
