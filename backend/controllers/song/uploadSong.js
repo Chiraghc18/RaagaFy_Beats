@@ -1,3 +1,4 @@
+// controllers/song/uploadSong.js
 const Song = require("../../models/Song");
 
 const uploadSong = async (req, res) => {
@@ -12,34 +13,22 @@ const uploadSong = async (req, res) => {
 
     const optionalFields = [
       "genre", "subgenre", "artist", "album",
-      "movie", "hero", "heroine", "language", "photo"
+      "movie", "hero", "heroine", "language"
     ];
     optionalFields.forEach((key) => {
       if (req.body[key]) songData[key] = req.body[key];
     });
 
     if (req.body.singers) {
-      if (Array.isArray(req.body.singers)) {
-        songData.singers = req.body.singers;
-      } else {
-        songData.singers = req.body.singers
-          .split(",")
-          .map(s => s.trim())
-          .filter(Boolean);
-      }
+      songData.singers = Array.isArray(req.body.singers)
+        ? req.body.singers
+        : req.body.singers.split(",").map(s => s.trim()).filter(Boolean);
     }
 
     const newSong = new Song(songData);
     await newSong.save();
 
-    const populated = await Song.findById(newSong._id)
-      .populate("artist", "name")
-      .populate("album", "name")
-      .populate("genre", "name")
-      .populate("singers", "name")
-      .populate("language", "name");
-
-    res.status(201).json(populated);
+    res.status(201).json({ songId: newSong._id });
   } catch (err) {
     console.error("uploadSong error:", err);
     res.status(500).json({ error: err.message });

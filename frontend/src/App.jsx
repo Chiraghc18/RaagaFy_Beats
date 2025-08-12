@@ -21,6 +21,8 @@ import SongFilterSearch from "./pages/SongFilterSearch";
 import BrowseByCategoryPage from "./pages/BrowseByCategoryPage";
 
 import SongPlayerPage from "./pages/SongPlayerPage";
+
+import UploadPhotoPage from "./pages/UploadPhotoPage";
  
 export default function App() {
   return (
@@ -28,6 +30,7 @@ export default function App() {
       <Routes>
         {/* Main music upload/player page */}
         <Route path="/" element={<HomePage />} />
+        <Route path="/upload-photo/:songId" element={<UploadPhotoPage />} />
 
         <Route path="/artists" element={<UploadResourcePage resource="artists" title="Artists" />} />
         <Route path="/heroes" element={<UploadResourcePage resource="heroes" title="Heroes" />} />

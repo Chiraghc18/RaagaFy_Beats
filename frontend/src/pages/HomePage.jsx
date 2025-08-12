@@ -28,24 +28,17 @@ export default function HomePage() {
   }
 
   const handleUpload = async (file, meta = {}) => {
-    try {
-      setIsUploading(true);
-      setProgress(0);
-      await uploadSong(file, meta, (event) => {
-        if (!event.total) return;
-        setProgress(Math.round((event.loaded * 100) / event.total));
-      });
-      setIsUploading(false);
-      setProgress(0);
-      loadSongs();
-      alert("Song uploaded");
-    } catch (err) {
-      console.error("upload error:", err.response?.data || err.message);
-      setIsUploading(false);
-      setProgress(0);
-      alert("Upload failed");
-    }
-  };
+  try {
+    setIsUploading(true);
+    const res = await uploadSong(file, meta);
+    const songId = res.data.songId;
+    setIsUploading(false);
+    window.location.href = `/upload-photo/${songId}`;
+  } catch (err) {
+    console.error(err);
+    setIsUploading(false);
+  }
+};
 
   const handleLike = async (songId) => {
     try {
