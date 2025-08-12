@@ -24,12 +24,20 @@ import SongPlayerPage from "./pages/SongPlayerPage";
 
 import UploadPhotoPage from "./pages/UploadPhotoPage";
  
+import Header from "./pages/Header";
+
+// User Page imports
+import Head from "./components/UserComponents/Head";
+import UserHome from "./pages/User/UserHome";
+import HeadSearch from "./components/UserComponents/HeadSearch";
 export default function App() {
   return (
     <Router>
+      {/* <Head /> */}
       <Routes>
         {/* Main music upload/player page */}
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<UserHome />} />
+        <Route path="/upload" element={<HomePage />} />
         <Route path="/upload-photo/:songId" element={<UploadPhotoPage />} />
 
         <Route path="/artists" element={<UploadResourcePage resource="artists" title="Artists" />} />
@@ -55,6 +63,9 @@ export default function App() {
         <Route path="/player" element={<SongPlayerPage />} />
         {/* 404 fallback */}
         <Route path="*" element={<NotFound />} />
+
+        {/* user page  */}
+        <Route path="/user" element={<HeadSearch />} />
       </Routes>
     </Router>
   );
