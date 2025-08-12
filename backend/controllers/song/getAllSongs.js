@@ -3,9 +3,12 @@ const Song = require("../../models/Song");
 const getAllSongs = async (req, res) => {
   try {
     const songs = await Song.find()
-      .populate("artist", "name")
-      .populate("album", "name")
+      .populate("hero", "name")
+      .populate("heroine", "name")
+      .populate("movie", "name")
+      .populate("language", "name")
       .populate("genre", "name")
+      .populate("subgenre", "name")
       .populate("singers", "name");
 
     res.json(songs);

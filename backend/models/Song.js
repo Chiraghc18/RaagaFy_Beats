@@ -5,7 +5,7 @@ const songSchema = new mongoose.Schema({
   title: { type: String, required: true },
   genre: { type: mongoose.Schema.Types.ObjectId, ref: "Genre", required: true },
   subgenre: { type: mongoose.Schema.Types.ObjectId, ref: "Subgenre" },
-  artist: { type: mongoose.Schema.Types.ObjectId, ref: "Artist", required: true },
+  artist: { type: mongoose.Schema.Types.ObjectId, ref: "Artist"},
   album: { type: mongoose.Schema.Types.ObjectId, ref: "Album" },
   movie: { type: mongoose.Schema.Types.ObjectId, ref: "Movie" },
   singers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Singer" }],
