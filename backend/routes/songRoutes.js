@@ -20,6 +20,11 @@ const getPhotoBySong = require("../controllers/photo/getPhotoBySong");
 
 router.get("/:songId/photo", getPhotoBySong);
 
+const getAllPhotos = require("../controllers/photo/getAllPhoto");
+
+// Get all photos for a song
+router.get("/photos", getAllPhotos);
+
 // Search songs by title
 router.get("/search/title", searchSongsByTitle);
 

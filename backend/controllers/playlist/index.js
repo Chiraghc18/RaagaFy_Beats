@@ -3,6 +3,7 @@ const getAllPlaylists = require('./getAllPlaylists');
 const getPlaylistById = require('./getPlaylistById');
 const addSongToPlaylist = require('./addSongToPlaylist');
 const removeSongFromPlaylist = require('./removeSongFromPlaylist');
+const clearPlaylist = require('./clearPlaylist'); // ✅ Add this line
 
 module.exports = {
   createPlaylist,
@@ -10,4 +11,5 @@ module.exports = {
   getPlaylistById,
   addSongToPlaylist,
   removeSongFromPlaylist,
+  clearPlaylist, // ✅ Export it
 };

@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
+/* git restore . */
+
 *{
     margin:0;
     padding:0;
@@ -7,3 +9,20 @@
     font-family:'Inter', sans-serif;
 
 }
+
+.back {
+  position: relative;
+  top: 10px;
+  left: 10px;
+  cursor: pointer;
+}
+
+.back i {
+  font-size: 20px;
+  color: #545353;
+}
+
+body{
+  background-color: rgb(240, 240, 240)
+}
+

@@ -1,22 +1,49 @@
-// src/pages/SongFilterSearchPage.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState} from "react";
 import SongFilterSearch from "../components/SongFilterSearch";
 import { fetchAllFilters, fetchFilteredSongs } from "../services/songService/songFilterService";
 import BrowseSongLists from "../components/BrowseSongLists";
-
+import "../assets/style/SongFilterSearchPage.css";
+import { useNavigate } from 'react-router-dom';
 export default function SongFilterSearchPage() {
   const [filters, setFilters] = useState({
-    genre: "", artist: "", album: "", movie: "", hero: "",
-    heroine: "", subgenre: "", language: "", singer: "",
+    genre: "",
+    artist: "",
+    album: "",
+    movie: "",
+    hero: "",
+    heroine: "",
+    subgenre: "",
+    language: "",
+    singer: "",
+    releaseYear: "",
+    name: "",
+
+    artistName: "",
+    albumName: "",
+    movieName: "",
+    heroName: "",
+    heroineName: "",
+    singerName: "",
+
+    genreName: "",
+    subgenreName: "",
+    languageName: "",
   });
 
   const [options, setOptions] = useState({
-    genres: [], artists: [], albums: [], movies: [],
-    heroes: [], heroines: [], singers: [], languages: [],
+    genres: [],
+    artists: [],
+    albums: [],
+    movies: [],
+    heroes: [],
+    heroines: [],
+    singers: [],
+    languages: [],
   });
 
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     const loadOptions = async () => {
@@ -29,7 +56,7 @@ export default function SongFilterSearchPage() {
   const handleChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
   };
-
+  
   const handleSearch = async () => {
     setLoading(true);
     try {
@@ -42,30 +69,41 @@ export default function SongFilterSearchPage() {
     }
   };
 
+    const navigate = useNavigate();
+
   return (
-    <div className="p-4 max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Filter Songs</h2>
-
-      <SongFilterSearch filters={filters} options={options} handleChange={handleChange} />
-
-      <button
-        onClick={handleSearch}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+    <>
+    <div
+        className="browse__back"
+        onClick={() => {navigate(-1);}}
       >
+        <i className="browse__back-icon fa-solid fa-arrow-left"></i>
+      </div>
+    <div className="sfs-page">
+      <h2 className="sfs-page__title">Filter Songs</h2>
+
+      <SongFilterSearch
+        filters={filters}
+        options={options}
+        handleChange={handleChange}
+      />
+
+      <button onClick={handleSearch} className="sfs-page__search-btn">
         Search
       </button>
 
-      <div className="mt-8">
-        <h3 className="text-xl font-semibold mb-2">Results:</h3>
+      <div className="sfs-results">
+        <h3 className="sfs-results__title">Results:</h3>
 
         {loading ? (
-          <p>Loading...</p>
+          <p className="sfs-results__loading">Loading...</p>
         ) : songs.length === 0 ? (
-          <p>No songs found</p>
+          <p className="sfs-results__empty">No songs found</p>
         ) : (
           <BrowseSongLists songs={songs} />
         )}
       </div>
     </div>
+  </>
   );
 }

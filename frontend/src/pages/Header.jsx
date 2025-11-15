@@ -4,13 +4,15 @@ import { Link } from "react-router-dom";
 
 export default function ResourceHeader() {
   const resources = [
-    { path: "/", label: "AddSongs" },
+    { path: "/upload", label: "AddSongs" },
     { path: "/heroes", label: "Heroes" },
     { path: "/artists", label: "Artists" },
     { path: "/heroines", label: "Heroines" },
     { path: "/movies", label: "Movies" },
     { path: "/genres", label: "Genres" },
     { path: "/singers", label: "Singers" },
+    { path: "/browse", label: "Browse" },
+    { path: "/search", label: "Search" },
   ];
 
   return (

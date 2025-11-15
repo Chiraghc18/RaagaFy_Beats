@@ -6,7 +6,8 @@ const getSongById = async (req, res) => {
       .populate("artist", "name")
       .populate("album", "name")
       .populate("genre", "name")
-      .populate("singers", "name");
+      .populate("singers", "name")
+      .sort({ releaseDate: -1, createdAt: -1 });
 
     if (!song) return res.status(404).json({ error: "Song not found" });
 

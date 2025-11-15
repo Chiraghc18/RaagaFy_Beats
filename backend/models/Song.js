@@ -11,10 +11,13 @@ const songSchema = new mongoose.Schema({
   singers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Singer" }],
   hero: { type: mongoose.Schema.Types.ObjectId, ref: "Hero" },
   heroine: { type: mongoose.Schema.Types.ObjectId, ref: "Heroine" },
-  language: { type: mongoose.Schema.Types.ObjectId, ref: "Language" },
+  language: { type: mongoose.Schema.Types.ObjectId, ref: "Language", required: true },
   photo: { type: String },
   audioUrl: { type: String, required: true },
-  likes: { type: Number, default: 0 }
+  likes: { type: Number, default: 0 },
+
+  // New release date field
+  releaseDate: { type: Date, required: true}
 }, {
   timestamps: true
 });

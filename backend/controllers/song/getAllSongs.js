@@ -9,7 +9,10 @@ const getAllSongs = async (req, res) => {
       .populate("language", "name")
       .populate("genre", "name")
       .populate("subgenre", "name")
-      .populate("singers", "name");
+      .populate("singers", "name")
+      .populate("album", "name")
+      .populate("artist", "name")
+      .sort({ releaseDate: -1, createdAt: -1 }); // 👈 Sort newest → oldest
 
     res.json(songs);
   } catch (err) {

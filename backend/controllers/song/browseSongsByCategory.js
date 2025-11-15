@@ -31,7 +31,8 @@ const browseSongsByCategory = async (req, res) => {
     }
 
     const songs = await Song.find(filter)
-      .populate("genre subgenre artist album movie singers hero heroine language");
+      .populate("genre subgenre artist album movie singers hero heroine language")
+      .sort({ releaseDate: -1, createdAt: -1 }); // 👈 Sort newest → oldest
 
     res.json(songs);
   } catch (err) {

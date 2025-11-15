@@ -13,7 +13,7 @@ const uploadSong = async (req, res) => {
 
     const optionalFields = [
       "genre", "subgenre", "artist", "album",
-      "movie", "hero", "heroine", "language"
+      "movie", "hero", "heroine", "language", "releaseDate" // <-- added releaseDate
     ];
     optionalFields.forEach((key) => {
       if (req.body[key]) songData[key] = req.body[key];

@@ -9,7 +9,8 @@ export const searchSongsByTitle = async (req, res) => {
 
     const regex = new RegExp(title, "i"); // case-insensitive regex
     const songs = await Song.find({ title: regex })
-      .populate("genre subgenre artist album movie singers hero heroine language");
+      .populate("genre subgenre artist album movie singers hero heroine language")
+      .sort({ releaseDate: -1, createdAt: -1 });
 
     res.json(songs);
   } catch (error) {

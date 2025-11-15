@@ -1,22 +1,40 @@
+// src/pages/PlaylistDetails.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   fetchPlaylistById,
   addSongToPlaylist,
   removeSongFromPlaylist,
+  clearPlaylist,
 } from "../services/playlistService";
 import { fetchSongById } from "../services/songService/songService";
-import fetchSongs  from "../services/songService/fetchSongs.js";
-
+import { fetchAllFilters, fetchFilteredSongs } from "../services/songService/songFilterService";
+import SongFilterSearch from "../components/SongFilterSearch";
 
 export default function PlaylistDetails() {
   const { id } = useParams();
   const [playlist, setPlaylist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(null);
-  const [allSongs, setAllSongs] = useState([]);
-  const [selectedSongId, setSelectedSongId] = useState("");
   const [songsDetails, setSongsDetails] = useState([]);
+
+  const [filters, setFilters] = useState({
+    genre: "",
+    artist: "",
+    album: "",
+    movie: "",
+    heroe: "",
+    heroine: "",
+    subgenre: "",
+    language: "",
+    singer: "",
+    releaseYear: "",
+  });
+
+  const [options, setOptions] = useState({});
+  const [filteredSongs, setFilteredSongs] = useState([]);
+  const [selectedSongs, setSelectedSongs] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
 
   const loadPlaylist = async () => {
     try {
@@ -24,12 +42,11 @@ export default function PlaylistDetails() {
       const res = await fetchPlaylistById(id);
       setPlaylist(res.data);
 
-      const songDetails = await Promise.all(
-        res.data.songs.map((s) => fetchSongById(s._id).then((res) => res.data))
+      const details = await Promise.all(
+        res.data.songs.map((s) => fetchSongById(s._id).then((x) => x.data))
       );
-      setSongsDetails(songDetails);
+      setSongsDetails(details);
     } catch (e) {
-      console.error("fetch playlist error:", e.response?.data || e.message);
       setErr(e.response?.data?.error || e.message);
     } finally {
       setLoading(false);
@@ -38,37 +55,47 @@ export default function PlaylistDetails() {
 
   useEffect(() => {
     loadPlaylist();
-    const loadAllSongs = async () => {
-      try {
-        const res = await fetchSongs();
-        setAllSongs(res.data);
-      } catch (e) {
-        console.error("fetch all songs error:", e);
-      }
-    };
-    loadAllSongs();
+    (async () => {
+      setOptions(await fetchAllFilters());
+    })();
   }, [id]);
 
-  const handleAddSong = async () => {
-    if (!selectedSongId) return;
-    try {
-      await addSongToPlaylist(id, selectedSongId);
-      setSelectedSongId("");
-      await loadPlaylist(); // refresh
-    } catch (e) {
-      console.error("add song error:", e.response?.data || e.message);
-      alert("Error adding song: " + (e.response?.data?.error || e.message));
-    }
+  const handleFilterChange = (e) => setFilters({ ...filters, [e.target.name]: e.target.value });
+
+  const handleFilterSearch = async () => {
+    const data = await fetchFilteredSongs(filters);
+    const filtered = data.filter((s) => !playlist.songs.some((ps) => ps._id === s._id));
+    setFilteredSongs(filtered);
+    setSelectedSongs([]);
+    setSelectAll(false);
+  };
+
+  const handleSelectSong = (songId) =>
+    setSelectedSongs((prev) => (prev.includes(songId) ? prev.filter((x) => x !== songId) : [...prev, songId]));
+
+  const handleSelectAll = () => {
+    if (selectAll) setSelectedSongs([]);
+    else setSelectedSongs(filteredSongs.map((s) => s._id));
+    setSelectAll(!selectAll);
+  };
+
+  const handleAddSelectedSongs = async () => {
+    for (let songId of selectedSongs) await addSongToPlaylist(id, songId);
+    setSelectedSongs([]);
+    setSelectAll(false);
+    loadPlaylist();
   };
 
   const handleRemoveSong = async (songId) => {
-    try {
-      await removeSongFromPlaylist(id, songId);
-      await loadPlaylist(); // refresh
-    } catch (e) {
-      console.error("remove song error:", e.response?.data || e.message);
-      alert("Error removing song: " + (e.response?.data?.error || e.message));
-    }
+    await removeSongFromPlaylist(id, songId);
+    loadPlaylist();
+  };
+
+  // ✅ NEW — Clear playlist
+  const handleClearPlaylist = async () => {
+    if (!window.confirm("Are you sure? This will remove ALL songs from this playlist.")) return;
+    await clearPlaylist(id);
+    loadPlaylist();
   };
 
   if (loading) return <div style={{ padding: 20 }}>Loading playlist...</div>;
@@ -81,96 +108,80 @@ export default function PlaylistDetails() {
         <Link to="/playlists">&larr; Back to Playlists</Link>
       </div>
 
-      <div style={{ display: "flex", gap: 16, alignItems: "center", marginBottom: 12 }}>
+      <div style={{ display: "flex", gap: 16, marginBottom: 20 }}>
         <div style={{ width: 160, height: 160 }}>
           {playlist.coverImage ? (
-            <img
-              src={playlist.coverImage}
-              alt={playlist.name}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                borderRadius: 8,
-              }}
-            />
+            <img src={playlist.coverImage} alt={playlist.name} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 8 }} />
           ) : (
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                background: "#f2f2f2",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
+            <div style={{ width: "100%", height: "100%", background: "#eee", display: "flex", justifyContent: "center", alignItems: "center" }}>
               No cover
             </div>
           )}
         </div>
+
         <div>
-          <h2 style={{ margin: 0 }}>{playlist.name}</h2>
-          <div style={{ color: "#666", marginTop: 6 }}>
-            {playlist.songs?.length || 0} song{playlist.songs?.length === 1 ? "" : "s"}
-          </div>
+          <h2>{playlist.name}</h2>
+          <div style={{ color: "#666" }}>{playlist.songs?.length || 0} songs</div>
+
+          {playlist.songs?.length > 0 && (
+            <button
+              onClick={handleClearPlaylist}
+              style={{
+                marginTop: 10,
+                padding: "6px 10px",
+                background: "#d9534f",
+                color: "white",
+                border: "none",
+                borderRadius: 4,
+              }}
+            >
+              Clear Playlist
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Add Song Section */}
-      <div style={{ marginBottom: 24 }}>
-        <select
-          value={selectedSongId}
-          onChange={(e) => setSelectedSongId(e.target.value)}
-        >
-          <option value="">-- Select song to add --</option>
-          {allSongs
-            .filter((s) => !playlist.songs.some((ps) => ps._id === s._id))
-            .map((song) => (
-              <option key={song._id} value={song._id}>
-                {song.title || song.filename || "Untitled"}
-              </option>
-            ))}
-        </select>
-        <button onClick={handleAddSong} style={{ marginLeft: 12 }}>
-          Add to Playlist
-        </button>
-      </div>
+      <h3>Filter Songs</h3>
+      <SongFilterSearch filters={filters} options={options} handleChange={handleFilterChange} />
+      <button onClick={handleFilterSearch} style={{ marginTop: 10 }}>Search</button>
 
-      {/* Playlist Songs */}
-      <div>
-        {!songsDetails || songsDetails.length === 0 ? (
-          <p>No songs in this playlist.</p>
-        ) : (
-          <ol style={{ paddingLeft: 18 }}>
-            {songsDetails.map((s) => (
-              <li key={s._id} style={{ marginBottom: 16 }}>
-                <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 600 }}>
-                      {s.title || s.filename || "Untitled"}
-                    </div>
-                    <div style={{ color: "#666", fontSize: 13 }}>
-                      {s.artist?.name || ""}
-                    </div>
-                  </div>
-                  <div style={{ minWidth: 260 }}>
-                    <audio controls src={s.audioUrl} style={{ width: "100%" }} />
-                  </div>
-                  <div>
-                    <button
-                      onClick={() => handleRemoveSong(s._id)}
-                      style={{ marginLeft: 8 }}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
+      {filteredSongs.length > 0 && (
+        <div style={{ marginTop: 20 }}>
+          <label>
+            <input type="checkbox" checked={selectAll} onChange={handleSelectAll} /> Select All
+          </label>
+
+          <ul style={{ marginTop: 10 }}>
+            {filteredSongs.map((s) => (
+              <li key={s._id}>
+                <label>
+                  <input type="checkbox" checked={selectedSongs.includes(s._id)} onChange={() => handleSelectSong(s._id)} />
+                  {s.title || s.filename}
+                </label>
               </li>
             ))}
-          </ol>
-        )}
-      </div>
+          </ul>
+
+          <button onClick={handleAddSelectedSongs} disabled={selectedSongs.length === 0} style={{ marginTop: 10 }}>
+            Add Selected Songs
+          </button>
+        </div>
+      )}
+
+      <h3 style={{ marginTop: 30 }}>Playlist Songs</h3>
+      {songsDetails.length === 0 ? (
+        <p>No songs in this playlist.</p>
+      ) : (
+        <ol>
+          {songsDetails.map((s) => (
+            <li key={s._id} style={{ marginBottom: 12 }}>
+              <strong>{s.title || s.filename}</strong>
+              <audio controls src={s.audioUrl} style={{ marginLeft: 12 }} />
+              <button onClick={() => handleRemoveSong(s._id)} style={{ marginLeft: 12 }}>Remove</button>
+            </li>
+          ))}
+        </ol>
+      )}
     </div>
   );
 }
