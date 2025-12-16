@@ -13,3 +13,5 @@ export const fetchHeroes = () => axios.get(`${API}/heroes`);
 export const fetchHeroines = () => axios.get(`${API}/heroines`);
 export const fetchSingers = () => axios.get(`${API}/singers`);
 export const fetchLanguages = () => axios.get(`${API}/languages`);
+
+export const updateSongDetails = (id, data) => axios.put(`${API}/songs/${id}`, data);

@@ -26,7 +26,9 @@ import UploadPhotoPage from "./pages/UploadPhotoPage";
  
 import Header from "./pages/Header";
 
+import EditSongPage from "./pages/EditSongPage"; // Import the new page
 
+import SongManager from "./pages/songManager";
 
 // User Page imports
 import Head from "./components/UserComponents/Head";
@@ -66,6 +68,11 @@ export default function App() {
 
         <Route path="/player" element={<SongPlayerPage />} />
         {/* 404 fallback */}
+
+        {/* edit songs */}
+        <Route path="/edit-song/:id" element={<EditSongPage />} />
+        <Route path="/manager" element={<SongManager />} />
+
         <Route path="*" element={<NotFound />} />
 
         {/* user page  */}

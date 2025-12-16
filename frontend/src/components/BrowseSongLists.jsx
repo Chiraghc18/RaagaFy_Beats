@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // 1. Added Link import
 import axios from "axios";
 
 export default function BrowseSongLists({ songs, photo }) {
@@ -51,6 +51,7 @@ export default function BrowseSongLists({ songs, photo }) {
             key={song._id}
             onClick={() => handleSongClick(index)}
             className="browse-songs__item"
+            style={{ position: "relative", cursor: "pointer" }} // Ensure pointer cursor
           >
             {photos[song._id] ? (
               <img
@@ -61,7 +62,19 @@ export default function BrowseSongLists({ songs, photo }) {
             ) : (
               <div className="browse-songs__item-placeholder">🎵</div>
             )}
+            
             <span className="browse-songs__item-title">{song.title}</span>
+
+            {/* 2. EDIT BUTTON with stopPropagation */}
+            <Link
+              to={`/edit-song/${song._id}`}
+              onClick={(e) => e.stopPropagation()} // <--- CRITICAL FIX
+              style={{ marginLeft: "10px" }}
+            >
+              <button style={{ cursor: "pointer", padding: "5px 10px" }}>
+                Edit
+              </button>
+            </Link>
           </div>
         ))}
       </div>

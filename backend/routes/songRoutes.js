@@ -1,43 +1,40 @@
 const express = require("express");
 const router = express.Router();
-const upload = require("../middlewares/cloudinaryStorage"); // your multer/cloudinary setup
-const { uploadSong, getAllSongs, getSongById, likeSong,searchSongsByTitle} = require("../controllers/song");
+const upload = require("../middlewares/cloudinaryStorage");
 const { uploadImage } = require("../middlewares/uploadImage");
-const uploadPhoto = require("../controllers/photo/uploadPhoto")
-// Upload audio file under field 'audio'
+const {
+  uploadSong,
+  getAllSongs,
+  getSongById,
+  likeSong,
+  searchSongsByTitle,
+  searchSongsByFilter,
+  updateSong,
+  browseSongsByCategory,
+} = require("../controllers/song");
+
+const uploadPhoto = require("../controllers/photo/uploadPhoto");
+const getPhotoBySong = require("../controllers/photo/getPhotoBySong");
+// Check what the actual file name is and update accordingly:
+const getAllPhotos = require("../controllers/photo/getAllPhoto"); // or getAllPhotos
+
+// Upload routes
 router.post("/upload", upload.single("audio"), uploadSong);
 router.post("/upload-photo", uploadImage.single("photo"), uploadPhoto);
 
-const searchSongsByFilter = require("../controllers/song/searchSongsByFilter");
-
-// Get all songs
+// Get routes
 router.get("/", getAllSongs);
-
-// Get single song
 router.get("/:id", getSongById);
-
-const getPhotoBySong = require("../controllers/photo/getPhotoBySong");
-
 router.get("/:songId/photo", getPhotoBySong);
+router.get("/photos/all", getAllPhotos);
 
-const getAllPhotos = require("../controllers/photo/getAllPhoto");
-
-// Get all photos for a song
-router.get("/photos", getAllPhotos);
-
-// Search songs by title
+// Search routes
 router.get("/search/title", searchSongsByTitle);
-
 router.get("/search/filter", searchSongsByFilter);
-
-// routes/songRoutes.js
-const browseSongsByCategory = require("../controllers/song/browseSongsByCategory");
-
 router.get("/browse/:category/:id", browseSongsByCategory);
 
-// Like song
+// Action routes
 router.post("/:id/like", likeSong);
-
-
+router.put("/:id", updateSong);
 
 module.exports = router;

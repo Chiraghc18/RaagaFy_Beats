@@ -1,7 +1,7 @@
 // controllers/photo/getAllPhotos.js
 const Photo = require("../../models/Photo");
 
-const getAllPhotos = async (req, res) => {
+const getAllPhoto = async (req, res) => {
   try {
     const photos = await Photo.find();
     // Always return array
@@ -12,4 +12,4 @@ const getAllPhotos = async (req, res) => {
   }
 };
 
-module.exports = getAllPhotos;
+module.exports = getAllPhoto;

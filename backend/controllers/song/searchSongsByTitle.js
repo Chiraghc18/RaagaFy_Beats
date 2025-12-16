@@ -1,5 +1,6 @@
-import Song from "../../models/Song.js"
-export const searchSongsByTitle = async (req, res) => {
+const Song = require("../../models/Song");
+
+const searchSongsByTitle = async (req, res) => {
   try {
     const { title } = req.query;
 
@@ -7,7 +8,7 @@ export const searchSongsByTitle = async (req, res) => {
       return res.status(400).json({ error: "Title query parameter is required" });
     }
 
-    const regex = new RegExp(title, "i"); // case-insensitive regex
+    const regex = new RegExp(title, "i");
     const songs = await Song.find({ title: regex })
       .populate("genre subgenre artist album movie singers hero heroine language")
       .sort({ releaseDate: -1, createdAt: -1 });
@@ -18,3 +19,5 @@ export const searchSongsByTitle = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+module.exports = searchSongsByTitle;

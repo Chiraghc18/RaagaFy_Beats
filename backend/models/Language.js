@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
-const heroSchema = new mongoose.Schema({
+const languageSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
   photo: { type: String },
 });
 
-module.exports = mongoose.model("Language", heroSchema);
+module.exports = mongoose.model("Language", languageSchema);
